@@ -54,40 +54,40 @@ RUN apt-get update -q && apt-get upgrade -q && \
 
 # Install wkhtmltopdf
 RUN cd /tmp && \
-    wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.1/wkhtmltox-0.12.1_linux-trusty-amd64.deb \
-    && dpkg -i wkhtmltox-0.12.1_linux-trusty-amd64.deb
+    wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb \
+    && dpkg -i wkhtmltox-0.12.5-1.bionic_amd64.deb
 
 # Download and install odoo requirements from github.com/odoo/odoo/requirements.txt
 RUN cd /tmp && \
-    wget -q https://raw.githubusercontent.com/odoo/odoo/12.0/requirements.txt && \
+    wget -q https://raw.githubusercontent.com/odoo/odoo/13.0/requirements.txt && \
     pip3 install -r requirements.txt && pip3 install --upgrade pip
 
 #Python Libraries
-RUN pip3 install vobject qrcode pyldap num2words 
+RUN pip3 install vobject qrcode pyldap num2words pandas
 
 # Cleanup
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* && rm -rf /tmp/*
 
 # Add ODOO user
-RUN adduser --home=/home/odoo-12.0/ --disabled-password --gecos "" --shell=/bin/bash odoo
+RUN adduser --home=/home/odoo-13.0/ --disabled-password --gecos "" --shell=/bin/bash odoo
 RUN echo 'root:odoo**' | chpasswd 
 RUN echo "odoo ALL=(root) NOPASSWD:ALL" | tee -a /etc/sudoers.d/user && \
     chmod 0440 /etc/sudoers.d/user
 
 # Create odoo-server.conf
-ADD files/odoo-server.conf /home/odoo-12.0/odoo-server.conf
-RUN chown odoo /home/odoo-12.0/odoo-server.conf && \
-    chmod +x /home/odoo-12.0/odoo-server.conf
+ADD files/odoo-server.conf /home/odoo-13.0/odoo-server.conf
+RUN chown odoo /home/odoo-13.0/odoo-server.conf && \
+    chmod +x /home/odoo-13.0/odoo-server.conf
 
 #Install Odoo
-RUN cd /home/odoo-12.0/ && git clone -b 12.0 --single-branch --depth=1 https://github.com/odoo/odoo.git odoo
-RUN chown -R odoo:odoo /home/ && chmod +x /home/odoo-12.0/odoo
+RUN cd /home/odoo-13.0/ && git clone -b 13.0 --single-branch --depth=1 https://github.com/eqilibruim501/odoo.git odoo
+RUN chown -R odoo:odoo /home/ && chmod +x /home/odoo-13.0/odoo
 RUN mkdir -p /home/.local/share/Odoo/filestore && \
     chown -R odoo:odoo /home/.local/share/Odoo/filestore
 
-RUN mkdir -p /home/odoo-12.0/extra-addons \
-        && chown -R odoo /home/odoo-12.0/extra-addons
-VOLUME ["/home/.local/share/Odoo/filestore", "/home/odoo-12.0/extra-addons", "/home/odoo-12.0/"]
+RUN mkdir -p /home/odoo-13.0/extra-addons \
+        && chown -R odoo /home/odoo-13.0/extra-addons
+VOLUME ["/home/.local/share/Odoo/filestore", "/home/odoo-13.0/extra-addons", "/home/odoo-13.0/"]
 
 # Add entrypoint file and give execute permission
 ADD files/entrypoint.sh /entrypoint.sh
