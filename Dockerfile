@@ -40,10 +40,10 @@ RUN apt-get update -q && apt-get upgrade -q && \
         openssh-server \
         openssl \
         openssl \
-        postgresql-9.6 \
-        postgresql-client-9.6 \
-        postgresql-contrib-9.6 \
-        postgresql-server-dev-9.6 \
+        postgresql \
+        postgresql-client-dev \
+        postgresql-contrib-dev \
+        postgresql-server-dev \
         python3 \
         python3-dev \
         python3-pip \
@@ -59,7 +59,7 @@ RUN cd /tmp && \
 
 # Download and install odoo requirements from github.com/odoo/odoo/requirements.txt
 RUN cd /tmp && \
-    wget -q https://raw.githubusercontent.com/odoo/odoo/13.0/requirements.txt && \
+    wget -q https://raw.githubusercontent.com/eqilibruim501/odoo/13.0/requirements.txt && \
     pip3 install -r requirements.txt && pip3 install --upgrade pip
 
 #Python Libraries
